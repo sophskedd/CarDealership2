@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -18,66 +19,71 @@ public class Main {
         // Filename where the inventory data will be saved and loaded.
         String filename = "inventory.dat";
 
-        // Variable to store the user's menu choice.
-        int option = 0;
-
         // Main loop that shows the menu and processes user input until the user chooses to exit.
-        while (option != 6) {
+        int option;
+        do {
             // Display the main menu options to the user.
             System.out.println("\nWelcome to the Dealership. Choose an option:");
-            System.out.println("1. Add a Car");
-            System.out.println("2. Display Inventory");
-            System.out.println("3. Save Inventory");
-            System.out.println("4. Load Inventory");
-            System.out.println("5. Test Horn");
-            System.out.println("6. Exit");
+            for (NavMenuActions action : NavMenuActions.values()) {
+                System.out.println(action.displayMessage);
+            }
 
             // Read the user's choice from the console.
             option = scanner.nextInt();
-            scanner.nextLine(); // Consume the trailing newline character after reading an integer.
+            scanner.nextLine(); // Consume the trailing newline character.
 
             // Switch statement to handle different user choices based on the option selected.
-            switch (option) {
-                case 1:
-                    // Option 1: Add a new car to the inventory.
-                    System.out.println("Enter brand:");
-                    String brand = scanner.nextLine(); // Read the car brand from the user.
-                    System.out.println("Enter color:");
-                    String color = scanner.nextLine(); // Read the car color from the user.
-                    System.out.println("Enter price:");
-                    String thanks = scanner.nextLine();
-                    System.out.println("Enjoy your car!");
-                    int price = scanner.nextInt(); // Read the car price from the user.
-                    scanner.nextLine(); // Consume the trailing newline character.
+            try {
+                switch (NavMenuActions.values()[option]) {
+                    case ADD_CAR:
+                        // Option 1: Add a new car to the inventory.
+                        System.out.println("Enter brand:");
+                        String brand = scanner.nextLine(); // Read the car brand from the user.
+                        System.out.println("Enter color:");
+                        String color = scanner.nextLine(); // Read the car color from the user.
+                        System.out.println("Enter price:");
+                        int price = scanner.nextInt(); // Read the car price from the user.
+                        scanner.nextLine(); // Consume the trailing newline character.
 
+                        // Create a new Car object and add it to the dealership inventory.
+                        Car car = new Car(brand, color, price);
+                        dealership.addVehicle(car);
+                        break;
 
-                    // Create a new Car object and add it to the dealership inventory.
-                    Car car = new Car(brand, color, price);
-                    dealership.addVehicle(car);
-                    break;
-                case 2:
-                    // Option 2: Display all cars currently in the inventory.
-                    dealership.displayInventory();
-                    break;
-                case 3:
-                    // Option 3: Save the current inventory to a file.
-                    dealership.saveInventoryToFile(filename);
-                    break;
-                case 4:
-                    // Option 4: Load the inventory from a file.
-                    dealership.loadInventoryFromFile(filename);
-                    break;
-                case 5:
-                    System.out.println("HONK!!");
-                case 6:
-                    // Option 5: Exit the program.
-                    System.out.println("Exiting...");
-                    break;
-                default:
-                    // Handle invalid options chosen by the user.
-                    System.out.println("Invalid option, please choose again.");
+                    case DISPLAY:
+                        // Option 2: Display all cars currently in the inventory.
+                        dealership.displayInventory();
+                        break;
+
+                    case SAVE:
+                        // Option 3: Save the current inventory to a file.
+                        dealership.saveInventoryToFile(filename);
+                        break;
+
+                    case LOAD:
+                        // Option 4: Load the inventory from a file.
+                        dealership.loadInventoryFromFile(filename);
+                        break;
+
+                    case HONK:
+                        // Option 5: Honk.
+                        System.out.println("HONK!!!!");
+                        break;
+
+                    case EXIT:
+                        // Option 0: Exit the program.
+                        System.out.println("Exiting...");
+                        break;
+
+                    default:
+                        // Handle invalid options chosen by the user.
+                        System.out.println("Invalid option, please choose again.");
+                        break;
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-        }
+        } while (option != 0);
 
         // Close the scanner to free up resources.
         scanner.close();

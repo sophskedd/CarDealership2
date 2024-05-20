@@ -3,31 +3,35 @@ package org.example;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-
-
 
 public class FileHandling {
-    public void saveInventoryToFile(String filename) {
+
+    /**
+     * Saves an object to a file. This method serializes the provided object
+     * to the specified filename.
+     *
+     * @param filename The name of the file where the object should be saved.
+     * @param object   The object to be saved.
+     * @throws IOException If an I/O error occurs while saving the object.
+     */
+    public void saveObjectToFile(String filename, Object object) throws IOException {
         try (ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(Paths.get(filename)))) {
-            Object inventory = null;
-            out.writeObject(null); // Write the entire inventory list as an object to the file.
-        } catch (IOException e) {
-            System.out.println("Error saving inventory: " + e.getMessage()); // Exception handling for file output errors.
+            out.writeObject(object);
         }
     }
 
     /**
-     * Loads the inventory from a file. This method deserializes the list of Car objects
-     * from the specified filename into the inventory list.
+     * Loads an object from a file. This method deserializes the object
+     * from the specified filename.
      *
-     * @param filename The name of the file from which the inventory should be loaded.
+     * @param filename The name of the file from which the object should be loaded.
+     * @return The object read from the file.
+     * @throws IOException            If an I/O error occurs while loading the object.
+     * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
-    public void loadInventoryFromFile(String filename) {
+    public Object loadObjectFromFile(String filename) throws IOException, ClassNotFoundException {
         try (ObjectInputStream in = new ObjectInputStream(Files.newInputStream(Paths.get(filename)))) {
-            List<Car> inventory = (List<Car>) in.readObject(); // Read the inventory list object from the file.
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error loading inventory: " + e.getMessage()); // Exception handling for file input errors or class not found.
+            return in.readObject();
         }
     }
 }

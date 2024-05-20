@@ -1,6 +1,6 @@
 package org.example;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +13,14 @@ import java.util.List;
 public class Dealership {
     // List to hold the inventory of cars. It uses Java's generic ArrayList to handle dynamic collections of Car objects.
     private final List<Car> inventory;
+    private final FileHandling fileHandling;
 
     /**
      * Constructor for the Dealership class. Initializes the inventory as an empty list.
      */
     public Dealership() {
         this.inventory = new ArrayList<>();
+        this.fileHandling = new FileHandling();
     }
 
     /**
@@ -40,18 +42,41 @@ public class Dealership {
         }
     }
 
-    public void saveInventoryToFile(String filename) {
-    }
-
-    public void loadInventoryFromFile(String filename) {
+    /**
+     * Saves the current state of the inventory to a file.
+     *
+     * @param filename The name of the file where the inventory should be saved.
+     * @throws IOException If an I/O error occurs while saving the inventory.
+     */
+    public void saveInventoryToFile(String filename) throws IOException {
+        fileHandling.saveObjectToFile(filename, inventory);
     }
 
     /**
-     * Saves the current state of the inventory to a file. This method serializes
-     * the list of Car objects to the specified filename.
+     * Loads the inventory from a file.
+     *
+     * @param filename The name of the file from which the inventory should be loaded.
+     * @throws IOException            If an I/O error occurs while loading the inventory.
+     * @throws ClassNotFoundException If the class of a serialized object cannot be found.
+     */
+    public void loadInventoryFromFile(String filename) throws IOException, ClassNotFoundException {
+        Object loadedObject = fileHandling.loadObjectFromFile(filename);
+        if (loadedObject instanceof List<?>) {
+            this.inventory.clear(); // Clear the current inventory
+            this.inventory.addAll((List<Car>) loadedObject); // Add all loaded cars to the inventory
+        } else {
+            System.err.println("Error: The loaded file does not contain a valid inventory list.");
+        }
+    }
+
+    /**
+     * Saves the current state of the inventory to a file. This method is a convenience
+     * method that delegates to saveInventoryToFile.
      *
      * @param filename The name of the file where the inventory should be saved.
+     * @throws IOException If an I/O error occurs while saving the inventory.
      */
-   
+    public void saveToFile(String filename) throws IOException {
+        saveInventoryToFile(filename);
+    }
 }
-
