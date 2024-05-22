@@ -16,6 +16,9 @@ public class Main {
         // Create an instance of Dealership to manage the inventory of vehicles.
         Dealership dealership = new Dealership();
 
+        // Create an instance of FileHandling for saving and loading the inventory.
+        FileHandling fileHandling = new FileHandling();
+
         // Filename where the inventory data will be saved and loaded.
         String filename = "inventory.dat";
 
@@ -57,12 +60,12 @@ public class Main {
 
                     case SAVE:
                         // Option 3: Save the current inventory to a file.
-                        dealership.saveInventoryToFile(filename);
+                        dealership.saveInventoryToFile(fileHandling, filename);
                         break;
 
                     case LOAD:
                         // Option 4: Load the inventory from a file.
-                        dealership.loadInventoryFromFile(filename);
+                        dealership.loadInventoryFromFile(fileHandling, filename);
                         break;
 
                     case HONK:
@@ -82,6 +85,8 @@ public class Main {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println("Error: " + e.getMessage());
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println("Invalid option, please choose again.");
             }
         } while (option != 0);
 
